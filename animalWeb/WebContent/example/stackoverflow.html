@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Google chart </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+	var queryObject = "";
+	var queryObjectLen = "";
+	
+	$.ajax({
+		type : 'POST',
+		url : 'graphOld.jsp',
+		dataType : 'json',
+		success : function(data) {
+			// stringify : 인자로 전달된 자바스크립트의 데이터(배열)를 JSON 문자열로 바꾸기
+			// eval : javascript 코드가 맞는지 검증하고 문자열을 자바스크립트 코드로 처리하는 함수
+			queryObject = eval('(' + JSON.stringify(data, null, 2) + ')');
+			
+			// queryObject.empdetails에는 2개의 Json 객체가 있음			
+			queryObjectLen = queryObject.barlist.length;
+			
+			// queryObject 데이터 확인
+			/* alert(queryObject.barlist[0].Year + 
+					' ' + queryObject.barlist[0].Dogs +
+					' ' + queryObject.barlist[0].Cats +
+					' ' + queryObject.barlist[0].The_Others); */
+		},
+		error : function(xhr, type){
+			alert('server error occoured')
+		}
+	});
+	
+	/* google.charts.load('current', {packages : [ 'corechart', 'bar' ]});
+    google.charts.setOnLoadCallback(drawMultSeries);
+ 
+    function drawMultSeries() {
+        
+         var data = new google.visualization.DataTable();
+         data.addColumn('string', 'year');
+         data.addColumn('number', 'dogs');
+         data.addColumn('number', 'cats');
+         data.addColumn('number', 'others');
+ 
+        alert('data생성');
+        for (var i = 0; i < queryObjectLen; i++) {
+        	var year = queryObject.barlist[i].Year;
+        	var dogs = queryObject.barlist[i].Dogs;
+        	var cats = queryObject.barlist[i].Cats;
+        	var others = queryObject.barlist[i].The_Others;
+        	//alert(year + dogs + cats + others);
+        	data.addRows([
+        		[year, dogs, cats, others]
+        	]);
+ 
+        }
+ 
+        var options = {
+            title : '연도별 유기동물 종류',
+            chartArea : {
+                width : '50%'
+            },
+            hAxis : {
+                title : 'Count',
+                minValue : 0
+            },
+            vAxis : {
+                title : 'Year'
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    } */
+	
+    google.charts.load("current", {packages:['corechart']});
+ 	google.charts.setOnLoadCallback(drawChart);
+ 	
+ 	function drawChart() {
+ 		
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'year');
+        data.addColumn('number', 'dogs');
+        data.addColumn('number', 'cats');
+        data.addColumn('number', 'others');
+        
+        alert('data생성');
+        for (var i = 0; i < queryObjectLen; i++) {
+        	var year = queryObject.barlist[i].Year;
+        	var dogs = queryObject.barlist[i].Dogs;
+        	var cats = queryObject.barlist[i].Cats;
+        	var others = queryObject.barlist[i].The_Others;
+        	//alert(year + dogs + cats + others);
+        	data.addRows([
+        		[year, dogs, cats, others]
+        	]);
+        }
+        
+        var options = {
+				width: 1200,
+                height: 600,
+                legend: { position: 'top', maxLines: 3 },
+                bar: { groupWidth: '75%' },
+                isStacked: true
+                };
+
+		var chart = new google.visualization.ColumnChart(document.getElementById('container'));
+        chart.draw(data, options);
+ 	
+ 	}
+
+</script>
+</head>
+<body>
+	<div id="container"></div>
+ </body>
+ </html>
